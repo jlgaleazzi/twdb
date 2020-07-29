@@ -1,23 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import csvToJson from "convert-csv-to-json";
 
 function App() {
+  const handleButtonClick = () => {
+    const file = "../public/emails.csv";
+    // fetch file
+    fetch(file)
+      .then((res) => {
+        return res.body;
+      })
+      .then((resp) => {
+        return csvToJson(resp);
+      })
+      .then(getUniqueEmails(resp));
+      .then(getCountPerDomain());
+  };
+
+  const getUniqueEmails = (mails) => {
+    var dict = {}
+    for ( let i =0; i< mails; i++) {
+      if (dict[mails[i]] !== mails[i]) {
+        // include in dictionary
+        dict[mails[i] = mails[i]];
+      }
+    }
+    return dict{}
+  };
+
+  const getCountPerDomain = (uniqueEmails) => {
+    // parse each mail
+    // split domain at @
+    // return user count
+  }
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <button onClick={() => handleButtonClick()}>Process Emails.</button>
+        <div className="mails container">
+
+        </div>
       </header>
     </div>
   );
