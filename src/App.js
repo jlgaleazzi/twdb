@@ -1,46 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import "./App.css";
-import csvToJson from "convert-csv-to-json";
 
 function App() {
+  const [uniqueEmails, setUniqueEmails] = useState([]);
+  const [addressesPerDomain, setAddressPerDomain] = useState([]);
+
   const handleButtonClick = () => {
-    const file = "../public/emails.csv";
+    const file = "/emails.csv";
     // fetch file
     fetch(file)
       .then((res) => {
-        return res.body;
+        return res.text();
       })
       .then((resp) => {
-        return csvToJson(resp);
+        return csvToArray(resp);
       })
-      .then(getUniqueEmails(resp));
-      .then(getCountPerDomain());
+      .then((mailArray) => {
+        let uqEmails = getUniqueEmails(mailArray);
+        setUniqueEmails(uqEmails);
+        return uqEmails;
+      });
+  };
+  const csvToArray = (csv) => {
+    let emails = csv.split("\n");
+    return emails;
   };
 
   const getUniqueEmails = (mails) => {
-    var dict = {}
-    for ( let i =0; i< mails; i++) {
+    var dict = {};
+    var uniqueEmails = [];
+    for (let i = 0; i < mails.length; i++) {
       if (dict[mails[i]] !== mails[i]) {
-        // include in dictionary
-        dict[mails[i] = mails[i]];
+        uniqueEmails.push(mails[i]);
       }
     }
-    return dict{}
+    return uniqueEmails;
   };
 
   const getCountPerDomain = (uniqueEmails) => {
     // parse each mail
     // split domain at @
     // return user count
-  }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
         <button onClick={() => handleButtonClick()}>Process Emails.</button>
-        <div className="mails container">
-
-        </div>
+        <div className="mails container"></div>
       </header>
     </div>
   );
